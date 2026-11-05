@@ -47,6 +47,12 @@
   var beamOut = document.querySelector(".beam--out");
   var pulseIn = document.querySelector(".pulse--in");
   var pulseOut = document.querySelector(".pulse--out");
+  var linesLayer = document.querySelector(".stage--3-lines");
+  var contentLayer = document.querySelector(".stage--3-content");
+  var tabsLayer = document.querySelector(".stage--3-tabs");
+  var symbol = document.querySelector(".symbol");
+  var LINE_HALF_H = 354;   // vertical reach of the line fan from the symbol (home-4)
+  var LINE_HALF_W = 734;   // horizontal reach
 
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
   function range(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
@@ -169,8 +175,22 @@
     var g = ease(range(top, vh * 0.3, 0));
     // --- with the scroll, leaving: the panel narrows by 30px on each side ---
     var n = ease(range(top, -pin, -pin - vh * 0.5));
-    panel.style.setProperty("--inset", (lerp(START.inset, 0, g) + 30 * n) + "px");
-    panel.style.setProperty("--panel-h", lerp(START.height, stageH, g) + "px");
+    var inset = lerp(START.inset, 0, g) + 30 * n;
+    var panelH = lerp(START.height, stageH, g);
+    panel.style.setProperty("--inset", inset + "px");
+    panel.style.setProperty("--panel-h", panelH + "px");
+
+    // content drifts up a little as the panel leaves (home-4 → home-5)
+    var shift = -60 * n;
+    var sy = "translate(-50%, calc(-50% + " + shift + "px))";
+    symbol.style.transform = sy;
+    contentLayer.style.transform = sy;
+    tabsLayer.style.transform = "translateY(" + shift + "px)";
+    // lines always run past the panel edges
+    var reach = Math.max(1,
+      (panelH / 2 + Math.abs(shift) + 40) / LINE_HALF_H,
+      ((CANVAS - 2 * inset) / 2 + 40) / LINE_HALF_W);
+    linesLayer.style.transform = sy + " scale(" + reach + ")";
     panel.style.setProperty("--radius", (lerp(START.radius, 0, g) + START.radius * n) + "px");
 
     // --- on its own (time): nodes bump away, interface comes in (home-4) ---
@@ -212,6 +232,7 @@
     pulseIn.style.opacity = pulseOut.style.opacity = "";
     root.style.removeProperty("--stage-h");
     root.style.removeProperty("--pin");
+    symbol.style.transform = contentLayer.style.transform = tabsLayer.style.transform = linesLayer.style.transform = "";
     if (play.raf) cancelAnimationFrame(play.raf);
     play.raf = 0;
     lock(false);

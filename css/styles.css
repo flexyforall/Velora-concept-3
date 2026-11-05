@@ -423,6 +423,9 @@ img.fill { position: absolute; display: block; max-width: none; }
 }
 
 .stage--3-tabs { position: absolute; inset: 0; z-index: 2; }
+/* the lines fan out from the symbol; scaled from that point so they always
+   run past the panel edges (home-5, 816:1929) */
+.stage--3-lines { transform-origin: 720.5px 400px; }
 
 .pulse {
   position: absolute;
