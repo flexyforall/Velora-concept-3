@@ -532,7 +532,7 @@ img.fill { position: absolute; display: block; max-width: none; }
 
 .stage--3-content { z-index: 2; }
 
-.beam { height: 0; }
+.beam { height: 0; transform-origin: 0 50%; }
 .beam img.fill { left: 0; top: -1.5px; }
 
 /* beam pulses travel card → symbol → window, hidden under them at both ends */
@@ -833,6 +833,8 @@ img.fill { position: absolute; display: block; max-width: none; }
   backdrop-filter: blur(11.5px);
   white-space: nowrap;
 }
+.tab:focus { outline: none; }
+.tab:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .tab {
   display: flex;
   align-items: center;

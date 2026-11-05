@@ -42,6 +42,10 @@
   var win = document.querySelector(".anim-up");
   var tabs = document.querySelector(".anim-up-sm");
   var heroInner = document.querySelector(".hero__inner");
+  var beamIn = document.querySelector(".beam--in");
+  var beamOut = document.querySelector(".beam--out");
+  var pulseIn = document.querySelector(".pulse--in");
+  var pulseOut = document.querySelector(".pulse--out");
 
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
   function range(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
@@ -87,7 +91,7 @@
       return;
     }
     stageH = Math.round(clamp(vh, 700, 1000));
-    pin = Math.round(Math.max(1000, vh * 1.4));
+    pin = Math.round(Math.max(1300, vh * 1.8));
     root.style.setProperty("--stage-h", stageH + "px");
     root.style.setProperty("--pin", pin + "px");
     update();
@@ -123,14 +127,26 @@
 
     // --- pinned: nodes bump away, interface comes in (home-4) ---
     stage2.style.opacity = net2 * (1 - ease(range(p, 0.1, 0.28)));
-    setStage3(ease(range(p, 0.16, 0.32)));
-    var kc = range(p, 0.2, 0.4);
-    var kw = range(p, 0.24, 0.46);
-    var kt = range(p, 0.3, 0.52);
+    setStage3(ease(range(p, 0.16, 0.3)));
+
+    // request card → line to the symbol → line to the result → result window → menu
+    var kc = range(p, 0.2, 0.36);
     card.style.transform = "translateX(" + (-56 * (1 - easeOutBack(kc))) + "px)";
     card.style.opacity = range(kc, 0, 0.3);
+
+    var bi = easeOut(range(p, 0.36, 0.46));
+    beamIn.style.transform = "scaleX(" + bi + ")";
+    pulseIn.style.opacity = range(p, 0.44, 0.47);
+
+    var bo = easeOut(range(p, 0.47, 0.57));
+    beamOut.style.transform = "scaleX(" + bo + ")";
+    pulseOut.style.opacity = range(p, 0.55, 0.58);
+
+    var kw = range(p, 0.56, 0.72);
     win.style.transform = "translateY(calc(-50% + " + (64 * (1 - easeOutBack(kw))) + "px)) scale(" + lerp(0.94, 1, easeOut(kw)) + ")";
     win.style.opacity = range(kw, 0, 0.3);
+
+    var kt = range(p, 0.66, 0.8);
     tabs.style.transform = "translateX(-50%) translateY(" + (40 * (1 - easeOutBack(kt))) + "px)";
     tabs.style.opacity = range(kt, 0, 0.3);
   }
@@ -142,6 +158,8 @@
     setStage3("");
     card.style.transform = win.style.transform = tabs.style.transform = "";
     card.style.opacity = win.style.opacity = tabs.style.opacity = "";
+    beamIn.style.transform = beamOut.style.transform = "";
+    pulseIn.style.opacity = pulseOut.style.opacity = "";
     root.style.removeProperty("--stage-h");
     root.style.removeProperty("--pin");
   }
@@ -165,29 +183,17 @@
   window.addEventListener("resize", layout);
   if (reduceMotion.addEventListener) reduceMotion.addEventListener("change", init);
 
-  // Product menu: click selects, hover previews (highlight follows the pointer)
-  var tabBar = document.querySelector(".tabs");
+  // Product menu: changes only on click
   var tabButtons = Array.prototype.slice.call(document.querySelectorAll(".tab"));
-  function highlight(target) {
-    tabButtons.forEach(function (b) { b.classList.toggle("is-on", b === target); });
-  }
-  function selected() {
-    return tabButtons.filter(function (b) { return b.classList.contains("tab--active"); })[0];
-  }
   tabButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       tabButtons.forEach(function (b) {
-        b.classList.toggle("tab--active", b === btn);
-        b.setAttribute("aria-selected", b === btn ? "true" : "false");
+        var on = b === btn;
+        b.classList.toggle("tab--active", on);
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
       });
-      highlight(btn);
     });
-    btn.addEventListener("mouseenter", function () { highlight(btn); });
-    btn.addEventListener("focus", function () { highlight(btn); });
-  });
-  tabBar.addEventListener("mouseleave", function () { highlight(selected()); });
-  tabBar.addEventListener("focusout", function (e) {
-    if (!tabBar.contains(e.relatedTarget)) highlight(selected());
   });
 
   init();
