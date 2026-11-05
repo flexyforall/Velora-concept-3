@@ -408,20 +408,18 @@ img.fill { position: absolute; display: block; max-width: none; }
   width: 8px;
   height: 8px;
   transform: translate(-50%, -50%);
-  animation: net-flow 2.4s cubic-bezier(.45, 0, .55, 1) infinite;
+  animation: net-flow var(--d, 2s) linear infinite;
 }
-.net__flow i:nth-child(2) { animation-delay: -1.2s; }
 .net__flow i::before {
   content: "";
   position: absolute;
   inset: -150%;
   background: url("../assets/decor/beam-pulse.svg") center / 100% 100% no-repeat;
 }
+/* starts under the symbol, ends under the node: no fading, no pulsing */
 @keyframes net-flow {
-  0%   { transform: translate(-50%, -50%); opacity: 0; }
-  15%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { transform: translate(calc(-50% + var(--x) * .86), calc(-50% + var(--y) * .86)); opacity: 0; }
+  from { transform: translate(-50%, -50%); }
+  to   { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))); }
 }
 
 /* product nodes (home-3) */
@@ -498,18 +496,16 @@ img.fill { position: absolute; display: block; max-width: none; }
 .beam { height: 0; }
 .beam img.fill { left: 0; top: -1.5px; }
 
-/* beam pulses travel card → symbol → window */
-.is-animated .pulse--in  { animation: beam-in 2s cubic-bezier(.45, 0, .55, 1) infinite; }
-.is-animated .pulse--out { animation: beam-out 2s cubic-bezier(.45, 0, .55, 1) infinite 1s; }
+/* beam pulses travel card → symbol → window, hidden under them at both ends */
+.is-animated .pulse--in  { animation: beam-in 1.45s linear infinite; }
+.is-animated .pulse--out { animation: beam-out 1.7s linear infinite; }
 @keyframes beam-in {
-  0%   { transform: translateX(-40px); opacity: 0; }
-  15%, 80% { opacity: 1; }
-  100% { transform: translateX(80px); opacity: 0; }
+  from { transform: translateX(-60px); }
+  to   { transform: translateX(127px); }
 }
 @keyframes beam-out {
-  0%   { transform: translateX(-82px); opacity: 0; }
-  15%, 80% { opacity: 1; }
-  100% { transform: translateX(104px); opacity: 0; }
+  from { transform: translateX(-110px); }
+  to   { transform: translateX(127px); }
 }
 
 /* Link · Fundraising (880:2954) */
@@ -781,7 +777,7 @@ img.fill { position: absolute; display: block; max-width: none; }
 .wp-assistant__k { font-weight: 600; font-size: 10px; letter-spacing: .4px; text-transform: uppercase; color: rgba(24, 24, 24, .5); }
 .wp-assistant__v { font-weight: 500; font-size: 12px; color: rgba(24, 24, 24, .9); }
 
-/* Product tabs (880:3667) */
+/* Product menu (884:4243) */
 .tabs {
   position: absolute;
   left: calc(50% + .5px);
@@ -791,7 +787,7 @@ img.fill { position: absolute; display: block; max-width: none; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 8px 16px 8px 10px;
+  padding: 8px 10px;
   background: var(--white);
   border-radius: 4px;
   -webkit-backdrop-filter: blur(11.5px);
@@ -805,9 +801,11 @@ img.fill { position: absolute; display: block; max-width: none; }
   padding-right: 12px;
   border-radius: 4px;
   flex: none;
-  transition: background-color .25s ease;
+  background-color: transparent;
+  transition: background-color .3s ease, padding .3s ease;
 }
 .tab__icon {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -816,9 +814,15 @@ img.fill { position: absolute; display: block; max-width: none; }
   -webkit-backdrop-filter: blur(25px);
   backdrop-filter: blur(25px);
   flex: none;
+  transition: background-color .3s ease;
 }
-.tab__icon > img { width: 44px; height: 44px; }
+.tab__img { display: block; flex: none; transition: opacity .3s ease; }
+.tab__icon > .tab__img { width: 44px; height: 44px; }
+.tab__icon > .tab__img--on,
+.tab__icon-pad > .tab__img--on { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.tab__img--on { opacity: 0; }
 .tab__icon-pad {
+  position: relative;
   width: 44px;
   height: 44px;
   padding: 10px;
@@ -828,24 +832,25 @@ img.fill { position: absolute; display: block; max-width: none; }
   justify-content: center;
   overflow: hidden;
 }
-.tab__icon-pad img { width: 32px; height: 32px; flex: none; }
+.tab__icon-pad .tab__img { width: 32px; height: 32px; }
 .tab__label {
-  font-weight: 400;
+  font-weight: 500;
   font-size: 15px;
   line-height: 1.55;
   letter-spacing: -.15px;
   color: var(--black);
   text-align: center;
+  transition: color .3s ease;
 }
-.tab:not(.tab--active):hover { background: rgba(239, 222, 222, .55); }
-.tab--active { background: var(--rose); }
-.tab--active .tab__label { font-weight: 600; letter-spacing: -.3px; color: var(--white); }
-.tab__logo-active {
+
+/* Fundraising keeps a 48px logo tile */
+.tab__logo {
   position: relative;
   width: 48px;
   height: 48px;
   border-radius: 2px;
-  background: var(--rose);
+  background: #f9f9f9;
+  transition: background-color .3s ease;
 }
 .tab__fr {
   position: absolute;
@@ -854,7 +859,18 @@ img.fill { position: absolute; display: block; max-width: none; }
   width: 22.072px;
   height: 22.072px;
   transform: translate(-50%, -50%);
+  transition: opacity .3s ease;
 }
+
+/* highlighted tab (selected, or under the pointer) */
+.tab.is-on { background-color: var(--tab-color); padding-top: 2px; padding-bottom: 2px; }
+.tab.is-on .tab__label { color: var(--white); }
+.tab.is-on .tab__img--off { opacity: 0; }
+.tab.is-on .tab__img--on { opacity: 1; }
+.tab.is-on:not(.tab--fundraising) .tab__icon { background-color: transparent; }
+.tab--fundraising.is-on { padding-top: 0; padding-bottom: 0; }
+.tab--fundraising.is-on .tab__logo { background-color: var(--tab-color); }
+.tab--fundraising.is-on .tab__label { font-weight: 600; letter-spacing: -.3px; }
 
 /* =========================================================
    LOGO MARQUEE (814:3042)

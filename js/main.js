@@ -165,15 +165,29 @@
   window.addEventListener("resize", layout);
   if (reduceMotion.addEventListener) reduceMotion.addEventListener("change", init);
 
-  // Product tabs: move the active state on click
-  var tabButtons = document.querySelectorAll(".tab");
-  Array.prototype.forEach.call(tabButtons, function (btn) {
+  // Product menu: click selects, hover previews (highlight follows the pointer)
+  var tabBar = document.querySelector(".tabs");
+  var tabButtons = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  function highlight(target) {
+    tabButtons.forEach(function (b) { b.classList.toggle("is-on", b === target); });
+  }
+  function selected() {
+    return tabButtons.filter(function (b) { return b.classList.contains("tab--active"); })[0];
+  }
+  tabButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      Array.prototype.forEach.call(tabButtons, function (b) {
+      tabButtons.forEach(function (b) {
         b.classList.toggle("tab--active", b === btn);
         b.setAttribute("aria-selected", b === btn ? "true" : "false");
       });
+      highlight(btn);
     });
+    btn.addEventListener("mouseenter", function () { highlight(btn); });
+    btn.addEventListener("focus", function () { highlight(btn); });
+  });
+  tabBar.addEventListener("mouseleave", function () { highlight(selected()); });
+  tabBar.addEventListener("focusout", function (e) {
+    if (!tabBar.contains(e.relatedTarget)) highlight(selected());
   });
 
   init();
