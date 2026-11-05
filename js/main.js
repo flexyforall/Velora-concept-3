@@ -49,6 +49,7 @@
   var pulseOut = document.querySelector(".pulse--out");
   var linesLayer = document.querySelector(".stage--3-lines");
   var contentLayer = document.querySelector(".stage--3-content");
+  var beamsLayer = document.querySelector(".stage--3-beams");
   var tabsLayer = document.querySelector(".stage--3-tabs");
   var symbol = document.querySelector(".symbol");
   var LINE_HALF_H = 354;   // vertical reach of the line fan from the symbol (home-4)
@@ -185,6 +186,7 @@
     var sy = "translate(-50%, calc(-50% + " + shift + "px))";
     symbol.style.transform = sy;
     contentLayer.style.transform = sy;
+    beamsLayer.style.transform = sy;
     tabsLayer.style.transform = "translateY(" + shift + "px)";
     // lines always run past the panel edges
     var reach = Math.max(1,
@@ -232,7 +234,7 @@
     pulseIn.style.opacity = pulseOut.style.opacity = "";
     root.style.removeProperty("--stage-h");
     root.style.removeProperty("--pin");
-    symbol.style.transform = contentLayer.style.transform = tabsLayer.style.transform = linesLayer.style.transform = "";
+    symbol.style.transform = contentLayer.style.transform = beamsLayer.style.transform = tabsLayer.style.transform = linesLayer.style.transform = "";
     if (play.raf) cancelAnimationFrame(play.raf);
     play.raf = 0;
     lock(false);
