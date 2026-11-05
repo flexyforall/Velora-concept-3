@@ -86,11 +86,17 @@
     counter.style.opacity = 1 - c;
     counter.style.transform = "translate(-50%, " + (-10 * c) + "px)";
 
+    // logo fades out on the white canvas, then the loader is gone at once
+    var out = range(t, LEAVE_AT - 320, LEAVE_AT - 40);
+    logo.style.opacity = 1 - out;
+
     if (t >= LEAVE_AT) {
       loader.classList.add("is-leaving");
+      root.classList.add("is-revealing");      // hero UI animates in, text is already there
       root.classList.remove("is-loading");
+      setTimeout(function () { root.classList.remove("is-revealing"); }, 2000);
       window.dispatchEvent(new Event("resize")); // let the page re-measure without the scroll lock
-      setTimeout(function () { loader.remove(); }, 700);
+      loader.remove();
       return;
     }
     requestAnimationFrame(frame);
