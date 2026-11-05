@@ -11,9 +11,8 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- Nav capsule (822:11552) -->
+  <!-- Nav capsule (880:2654) -->
   <header class="nav">
-    <img class="nav__bg" src="assets/images/nav-capsule-bg.png" alt="">
     <div class="nav__inner">
       <div class="nav__left">
         <a href="#" class="nav__logo" aria-label="Velora home"><img src="assets/icons/velora-logo.svg" width="96" height="14.9695" alt="Velora"></a>
@@ -37,6 +36,7 @@
   <main class="page">
     <!-- Hero (814:2753) -->
     <section class="hero">
+      <div class="hero__inner">
       <div class="hero__deco hero__r14"></div>
       <div class="hero__deco hero__r19"></div>
 
@@ -78,22 +78,25 @@
       <img class="hero__deco hero__glow-l" src="assets/decor/hero-glow-left.svg" width="108" height="78" alt="">
       <img class="hero__deco hero__glow-r" src="assets/decor/hero-glow-right.svg" width="155" height="60" alt="">
       <div class="hero__deco hero__r18"></div>
+      </div>
     </section>
 
-    <!-- Products (816:1929) + scroll storyboard (home-2 → home-3 → home-4) -->
+    <!-- Products: scroll storyboard home-2 → home-3 → home-4 (section 884:3776) -->
     <section class="products" id="products">
       <div class="products__sticky">
         <div class="panel">
-          <!-- Gradient background -->
-          <div class="abs" style="left:-312px;top:-183.85px;width:1157.693px;height:989.583px"><img class="fill" style="inset:-15.28% -13.06%" src="assets/decor/coral.svg" alt=""></div>
-          <div class="abs flex-center" style="left:45px;top:-225px;width:1134.339px;height:972.986px">
-            <div class="highlight"><img class="fill" style="inset:-25.86% -48.51%" src="assets/decor/highlight.svg" alt=""></div>
+          <!-- Gradient background (home-4, 1440 × 812 box centered in the panel) -->
+          <div class="box box--full">
+            <div class="abs" style="left:-312px;top:-123.85px;width:1157.693px;height:989.583px"><img class="fill" style="inset:-15.28% -13.06%" src="assets/decor/coral.svg" alt=""></div>
+            <div class="abs flex-center" style="left:45px;top:-165px;width:1134.339px;height:972.986px">
+              <div class="highlight"><img class="fill" style="inset:-25.86% -48.51%" src="assets/decor/highlight.svg" alt=""></div>
+            </div>
+            <div class="abs" style="left:670.6px;top:-59.06px;width:453.005px;height:884.881px"><img class="fill" style="inset:-13.42% -26.22%" src="assets/decor/blush.svg" alt=""></div>
+            <div class="abs" style="left:908.15px;top:-145.44px;width:755.847px;height:539.891px"><img class="fill" style="inset:-24% -17.14%" src="assets/decor/rose.svg" alt=""></div>
           </div>
-          <div class="abs" style="left:670.6px;top:-119.06px;width:453.005px;height:884.881px"><img class="fill" style="inset:-13.42% -26.22%" src="assets/decor/blush.svg" alt=""></div>
-          <div class="abs" style="left:908.15px;top:-205.44px;width:755.847px;height:539.891px"><img class="fill" style="inset:-24% -17.14%" src="assets/decor/rose.svg" alt=""></div>
 
           <!-- Stage 1: network (home-2, 818:6999) -->
-          <div class="stage stage--1" data-stage="1">
+          <div class="stage stage--1 box box--net" data-stage="1">
             <div class="abs center" style="left:50%;top:50%;width:1396px;height:659px"><img class="fill" style="inset:-1.04% -5.87% -3.09% 0" src="assets/decor/network-decor-dots.svg" alt=""></div>
             <span class="pulse-lg" style="left:calc(50% - 181px);top:calc(50% - 43px)"></span>
             <span class="pulse-lg" style="left:calc(50% + 169px);top:calc(50% - 39px)"></span>
@@ -103,7 +106,7 @@
           </div>
 
           <!-- Stage 2: product nodes (home-3, 818:6858) -->
-          <div class="stage stage--2" data-stage="2">
+          <div class="stage stage--2 box box--net box--net-shift" data-stage="2">
             <div class="abs center" style="left:50%;top:calc(50% + 20px);width:1396px;height:659px"><img class="fill" style="inset:-1.04% -5.87% -3.09% 0" src="assets/decor/network-decor-icons.svg" alt=""></div>
             <span class="pulse" style="left:562px;top:317px"><img src="assets/decor/beam-pulse-soft.svg" alt=""></span>
             <span class="pulse" style="left:618px;top:422.5px"><img src="assets/decor/beam-pulse-soft.svg" alt=""></span>
@@ -111,36 +114,36 @@
             <span class="pulse" style="left:542px;top:202.5px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
             <span class="pulse" style="left:862px;top:303.5px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
             <div class="node node--main" style="left:457px;top:121.5px">
-              <div class="node__logo"><span class="node__fr"><img class="fill" style="inset:-6.57%" src="assets/icons/product-fundraising-color.svg" alt="Fundraising"></span></div>
+              <div class="node__logo"><span class="node__fr"><img class="fill" style="inset:-6.57%" src="assets/icons/product-fundraising-color.svg" width="29.4985" height="29.4985" alt="Fundraising"></span></div>
             </div>
-            <div class="node" style="left:307px;top:228px"><img src="assets/icons/node-donor-management.svg" width="44" height="44" alt="Donor Management"></div>
-            <div class="node" style="left:500px;top:481.5px"><img src="assets/icons/node-grant-management.svg" width="44" height="44" alt="Grant Management"></div>
+            <div class="node" style="left:307px;top:228px"><img class="node__img" src="assets/icons/node-donor-management.svg" width="44" height="44" alt="Donor Management"></div>
+            <div class="node" style="left:500px;top:481.5px"><img class="node__img" src="assets/icons/node-grant-management.svg" width="44" height="44" alt="Grant Management"></div>
             <div class="node" style="left:961px;top:243.5px"><span class="node__icon"><img src="assets/icons/node-mission-assistant.svg" width="32" height="32" alt="Mission Assistant"></span></div>
-            <div class="node" style="left:802px;top:473.5px"><img src="assets/icons/node-fund-accounting.svg" width="44" height="44" alt="Fund Accounting"></div>
+            <div class="node" style="left:802px;top:473.5px"><img class="node__img" src="assets/icons/node-fund-accounting.svg" width="44" height="44" alt="Fund Accounting"></div>
           </div>
 
-          <!-- Stage 3 (final, home-5): connection lines -->
-          <div class="stage stage--3" data-stage="3">
-            <div class="abs" style="left:-13px;top:153.04px;width:734.017px;height:179.819px"><img class="fill" style="inset:-0.28% 0" src="assets/decor/line-1.svg" alt=""></div>
-            <div class="abs" style="left:369.26px;top:-21px;width:351.752px;height:353.855px"><img class="fill" style="inset:-0.1% -0.11%" src="assets/decor/line-2.svg" alt=""></div>
-            <div class="abs flip-x" style="left:720.49px;top:-21px;width:351.752px;height:353.855px"><img class="fill" style="inset:-0.1% -0.11%" src="assets/decor/line-3.svg" alt=""></div>
-            <div class="abs" style="left:721.02px;top:154.09px;width:732.196px;height:178.768px"><img class="fill" style="inset:-0.29% 0" src="assets/decor/line-4.svg" alt=""></div>
-            <div class="abs flip-y" style="left:-13px;top:346px;width:734.017px;height:179.819px"><img class="fill" style="inset:-0.28% 0" src="assets/decor/line-1.svg" alt=""></div>
-            <div class="abs flip-y" style="left:369.26px;top:346px;width:351.752px;height:353.855px"><img class="fill" style="inset:-0.1% -0.11%" src="assets/decor/line-2.svg" alt=""></div>
-            <div class="abs rot-180" style="left:720.49px;top:346px;width:351.752px;height:353.855px"><img class="fill" style="inset:-0.1% -0.11%" src="assets/decor/line-3.svg" alt=""></div>
-            <div class="abs flip-y" style="left:721.02px;top:346px;width:732.196px;height:178.768px"><img class="fill" style="inset:-0.29% 0" src="assets/decor/line-4.svg" alt=""></div>
-            <div class="abs" style="left:666.44px;top:229.27px;width:799.198px;height:178.768px"><img class="fill" style="inset:-41.18% -9.21%" src="assets/decor/out-glow.svg" alt=""></div>
+          <!-- Stage 3 (home-4, 880:2425): connection lines -->
+          <div class="stage stage--3 box box--full" data-stage="3">
+            <div class="abs" style="left:-13px;top:213.04px;width:734.017px;height:179.819px"><img class="fill" style="inset:-0.28% 0" src="assets/decor/line-1.svg" alt=""></div>
+            <div class="abs" style="left:369.26px;top:39px;width:351.752px;height:353.855px"><img class="fill" style="inset:-0.1% -0.11%" src="assets/decor/line-2.svg" alt=""></div>
+            <div class="abs flip-x" style="left:720.49px;top:39px;width:351.752px;height:353.855px"><img class="fill" style="inset:-0.1% -0.11%" src="assets/decor/line-3.svg" alt=""></div>
+            <div class="abs" style="left:721.02px;top:214.09px;width:732.196px;height:178.768px"><img class="fill" style="inset:-0.29% 0" src="assets/decor/line-4.svg" alt=""></div>
+            <div class="abs flip-y" style="left:-13px;top:406px;width:734.017px;height:179.819px"><img class="fill" style="inset:-0.28% 0" src="assets/decor/line-1.svg" alt=""></div>
+            <div class="abs flip-y" style="left:369.26px;top:406px;width:351.752px;height:353.855px"><img class="fill" style="inset:-0.1% -0.11%" src="assets/decor/line-2.svg" alt=""></div>
+            <div class="abs rot-180" style="left:720.49px;top:406px;width:351.752px;height:353.855px"><img class="fill" style="inset:-0.1% -0.11%" src="assets/decor/line-3.svg" alt=""></div>
+            <div class="abs flip-y" style="left:721.02px;top:406px;width:732.196px;height:178.768px"><img class="fill" style="inset:-0.29% 0" src="assets/decor/line-4.svg" alt=""></div>
+            <div class="abs" style="left:666.44px;top:289.27px;width:799.198px;height:178.768px"><img class="fill" style="inset:-41.18% -9.21%" src="assets/decor/out-glow.svg" alt=""></div>
           </div>
 
           <!-- Velora symbol (shared by all stages) -->
           <div class="symbol"><img src="assets/icons/velora-mark.svg" alt="Velora"></div>
 
-          <!-- Stage 3 (final, home-5): content -->
-          <div class="stage stage--3 stage--3-content" data-stage="3">
-            <div class="abs beam" style="left:549px;top:340px;width:127px"><img class="fill" style="inset:-1.5px 0 0 0" src="assets/decor/beam-in.svg" alt=""></div>
-            <div class="abs beam" style="left:752px;top:340px;width:190px"><img class="fill" style="inset:-1.5px 0 0 0" src="assets/decor/beam-out.svg" alt=""></div>
-            <span class="pulse pulse--travel" style="left:589px;top:335px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
-            <span class="pulse pulse--travel" style="left:833.5px;top:335px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
+          <!-- Stage 3 (home-4, 880:2425): content -->
+          <div class="stage stage--3 stage--3-content box box--full" data-stage="3">
+            <div class="abs beam" style="left:549px;top:400px;width:127px"><img class="fill" style="inset:-1.5px 0 0 0" src="assets/decor/beam-in.svg" alt=""></div>
+            <div class="abs beam" style="left:752px;top:400px;width:190px"><img class="fill" style="inset:-1.5px 0 0 0" src="assets/decor/beam-out.svg" alt=""></div>
+            <span class="pulse pulse--travel" style="left:589px;top:395px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
+            <span class="pulse pulse--travel" style="left:833.5px;top:395px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
 
             <!-- Link card (880:2954) -->
             <div class="link-stack anim-left">
@@ -206,7 +209,10 @@
               </div>
             </div>
 
-            <!-- Product tabs (880:3667) -->
+          </div>
+
+          <!-- Product tabs (880:2576), anchored to the panel bottom -->
+          <div class="stage stage--3 stage--3-tabs" data-stage="3">
             <div class="tabs anim-up-sm" role="tablist">
               <button class="tab tab--active" role="tab" aria-selected="true">
                 <span class="tab__icon"><span class="tab__logo-active"><span class="tab__fr"><img class="fill" style="inset:-6.57%" src="assets/icons/product-fundraising-white.svg" alt=""></span></span></span>

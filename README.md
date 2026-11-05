@@ -2,9 +2,10 @@
 
 Static landing page built 1:1 from the Figma file **Velora → section "Concept 3"** (node `817:2375`).
 
-- `home-5` is the full page layout (hero, products panel, logo strip, "Proven at scale").
-- `home-1 … home-4` are the scroll storyboard. They are implemented as a pinned scroll
-  animation of the products panel: network → product nodes → product window and tabs.
+- `home-5` is the full page layout (hero, logo strip, "Proven at scale").
+- Section `884:3776` (`home-2 → home-3 → home-4`) is the scroll animation of the products panel:
+  the panel rises with a bare network (home-2), product nodes appear (home-3), the panel grows
+  to full-bleed and pins while the link card, product window and tabs come in (home-4).
 
 ## Structure
 
@@ -15,7 +16,6 @@ js/main.js          canvas scaling + scroll storyboard + tab switching
 assets/
   icons/            logo, UI icons, product icons (SVG)
   decor/            gradients, lines, glows, beams, bottom strips (SVG)
-  images/           nav capsule background (PNG)
   logos/            partner logos (PNG)
 ```
 
@@ -36,4 +36,4 @@ python3 -m http.server 8080
 - The design canvas is 1440px. Screens narrower than 1440px scale the canvas down
   proportionally, so the layout stays the same as in Figma.
 - With `prefers-reduced-motion` turned on, or without JavaScript, the page shows the final
-  `home-5` state and nothing is pinned.
+  `home-4` state and nothing is pinned.

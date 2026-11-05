@@ -72,17 +72,9 @@ img.fill { position: absolute; display: block; max-width: none; }
   right: 0;
   z-index: 100;
   height: var(--nav-h);
-}
-.nav__bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  border-radius: 12px 12px 0 0;
-  -webkit-backdrop-filter: blur(1.5px);
-  backdrop-filter: blur(1.5px);
+  background: rgba(255, 255, 255, .6);
+  -webkit-backdrop-filter: blur(18.5px);
+  backdrop-filter: blur(18.5px);
 }
 .nav__inner {
   position: relative;
@@ -168,6 +160,7 @@ img.fill { position: absolute; display: block; max-width: none; }
   position: relative;
   height: 650px;
 }
+.hero__inner { position: absolute; inset: 0; will-change: transform; }
 .hero__deco { position: absolute; }
 .hero__r14 { left: 298px; top: 55px; width: 147px; height: 100px; border: 1px solid var(--grey-block); }
 .hero__r19 { left: 1192px; top: 236px; width: 101px; height: 100px; border: 1px solid var(--grey-block); }
@@ -321,20 +314,41 @@ img.fill { position: absolute; display: block; max-width: none; }
 .btn--secondary:hover { border-color: rgba(24, 24, 24, .2); }
 
 /* =========================================================
-   PRODUCTS (816:1929) — panel 1408 × 742, inset 16px
+   PRODUCTS — storyboard home-2 → home-3 → home-4 (884:3776)
+   Start: panel inset 36px, 659px tall, radius 4 (home-2/home-3)
+   End:   full-bleed panel, full viewport height, radius 0 (home-4)
+   JS drives --inset / --panel-h / --radius; defaults = final state.
    ========================================================= */
 .products { position: relative; }
-.products__sticky { padding: 0 16px 30px; }
+.products__sticky {
+  position: relative;
+  height: var(--stage-h, 812px);
+}
 
 .panel {
-  position: relative;
-  width: 1408px;
-  height: 742px;
+  position: absolute;
+  top: 0;
+  left: var(--inset, 0px);
+  right: var(--inset, 0px);
+  height: var(--panel-h, 812px);
   background: var(--rose);
-  border-radius: 4px;
+  border-radius: var(--radius, 0px);
   overflow: hidden;
   isolation: isolate;
 }
+
+/* Layers keep their Figma coordinates inside a fixed-size box that stays
+   centered in the panel while the panel resizes. */
+.box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.box--full { width: 1440px; height: 812px; }
+.box--net { width: 1368px; height: 659px; }
+/* home-3: the symbol sits 19.5px below the box center */
+.box--net-shift { top: calc(50% - 19.5px); }
 
 .highlight {
   position: relative;
@@ -344,11 +358,7 @@ img.fill { position: absolute; display: block; max-width: none; }
   transform: rotate(-59.11deg);
 }
 
-/* storyboard stages */
-.stage { position: absolute; inset: 0; }
-/* home-2 / home-3 boxes (1368 × 659) aligned so the Velora symbol stays put */
-.stage--1 { left: 36px; top: 16.5px; width: 1368px; height: 659px; right: auto; bottom: auto; }
-.stage--2 { left: 36px; top: -3px; width: 1368px; height: 659px; right: auto; bottom: auto; }
+.stage--3-tabs { position: absolute; inset: 0; z-index: 2; }
 
 .pulse {
   position: absolute;
@@ -382,7 +392,7 @@ img.fill { position: absolute; display: block; max-width: none; }
   backdrop-filter: blur(10px);
   box-shadow: inset 0 7px 4px 0 rgba(255, 255, 255, .25);
 }
-.node img { width: 44px; height: 44px; }
+.node__img { width: 44px; height: 44px; }
 .node--main {
   -webkit-backdrop-filter: blur(25px);
   backdrop-filter: blur(25px);
@@ -412,8 +422,8 @@ img.fill { position: absolute; display: block; max-width: none; }
 /* Velora symbol */
 .symbol {
   position: absolute;
-  left: calc(50% + 16px);
-  top: calc(50% - 25px);
+  left: 50%;
+  top: 50%;
   width: 88px;
   height: 88px;
   transform: translate(-50%, -50%);
@@ -447,12 +457,12 @@ img.fill { position: absolute; display: block; max-width: none; }
   border-radius: 4px;
   box-shadow: 0 12px 28px -6px rgba(168, 36, 63, .18);
 }
-.link-stack__b2 { left: 166px; top: 359px; width: 348px; height: 48px; background: #eba19e; }
-.link-stack__b1 { left: 146px; top: 338px; width: 388px; height: 54px; background: #f5cac6; }
+.link-stack__b2 { left: 166px; top: 421px; width: 348px; height: 48px; background: #eba19e; }
+.link-stack__b1 { left: 146px; top: 400px; width: 388px; height: 54px; background: #f5cac6; }
 .link-card {
   position: absolute;
   left: 129px;
-  top: 301px;
+  top: 363px;
   width: 420px;
   display: flex;
   align-items: center;
@@ -506,7 +516,7 @@ img.fill { position: absolute; display: block; max-width: none; }
 .window {
   position: absolute;
   left: 933px;
-  top: calc(50% - 20px);
+  top: 50%;
   width: 370px;
   transform: translateY(-50%);
   display: flex;
@@ -710,7 +720,7 @@ img.fill { position: absolute; display: block; max-width: none; }
 /* Product tabs (880:3667) */
 .tabs {
   position: absolute;
-  left: calc(50% + 16.5px);
+  left: calc(50% + .5px);
   bottom: 30px;
   transform: translateX(-50%);
   display: flex;
@@ -928,21 +938,15 @@ img.fill { position: absolute; display: block; max-width: none; }
 .strip { position: absolute; height: 35.4172px; }
 
 /* =========================================================
-   SCROLL STORYBOARD (home-1 → home-5)
-   Enabled by JS (.is-animated). Without JS the final state is shown.
+   SCROLL STORYBOARD — enabled by JS (.is-animated).
+   Without JS / with reduced motion the final home-4 frame is shown.
    ========================================================= */
+.stage { position: absolute; }
 .stage--1,
 .stage--2 { opacity: 0; visibility: hidden; }
 
-.is-animated .products { height: calc(772px + var(--pin, 1600px)); }
-.is-animated .products__sticky { position: sticky; top: var(--stick-top, 74px); }
+.is-animated .products { height: calc(var(--stage-h, 812px) + var(--pin, 1600px)); }
+.is-animated .products__sticky { position: sticky; top: 0; }
 .is-animated .stage { will-change: opacity, transform; }
 .is-animated .stage--1,
 .is-animated .stage--2 { visibility: visible; }
-
-@media (prefers-reduced-motion: reduce) {
-  .is-animated .products { height: auto; }
-  .is-animated .products__sticky { position: static; }
-  .is-animated .stage--1,
-  .is-animated .stage--2 { visibility: hidden; }
-}
