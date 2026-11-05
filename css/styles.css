@@ -27,7 +27,10 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
+/* scroll is paused while the full-screen panel plays its sequence */
+html.is-locked,
+html.is-locked body { overflow: hidden; }
 
 body {
   margin: 0;

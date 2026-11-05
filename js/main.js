@@ -3,8 +3,9 @@
  * 2) Scroll storyboard for the products panel (Figma section 884:3776):
  *    home-2  panel rises into view; white dots travel from the symbol along the lines
  *    home-3  each dot reaches its spot and the product node pops in, new dots keep flowing
- *    home-4  panel grows to full-bleed and pins; the nodes bump and vanish,
- *            then the link card, product window and tabs come in
+ *    home-4  panel grows to full-bleed and pins; from here the rest plays on its own
+ *            (not with the scroll): the nodes bump and vanish, then the request card,
+ *            the lines through the symbol, the result window and the menu come in
  */
 (function () {
   "use strict";
@@ -91,7 +92,7 @@
       return;
     }
     stageH = Math.round(clamp(vh, 700, 1000));
-    pin = Math.round(Math.max(1300, vh * 1.8));
+    pin = Math.round(Math.max(420, vh * 0.55)); // short hold on the final frame before it scrolls away
     root.style.setProperty("--stage-h", stageH + "px");
     root.style.setProperty("--pin", pin + "px");
     update();
@@ -101,31 +102,72 @@
     for (var i = 0; i < stage3.length; i++) stage3[i].style.opacity = o;
   }
 
+  // --- full-screen state: the rest plays on its own, not with the scroll ---
+  var PLAY_END = 0.82;           // where the timeline below is complete
+  var PLAY_MS = 4000;            // ms for p: 0 → 1 (so ~3.3s to PLAY_END)
+  var BACK_MS = 1400;            // faster when rewinding
+  var play = { p: 0, target: 0, raf: 0, last: 0 };
+  var lastTop = 0;
+
+  function lock(on) { root.classList.toggle("is-locked", on); }
+
+  function step(now) {
+    var dt = Math.min(64, now - (play.last || now));
+    play.last = now;
+    var dir = play.target > play.p ? 1 : -1;
+    play.p += dir * dt / (dir > 0 ? PLAY_MS : BACK_MS);
+    if ((dir > 0 && play.p >= play.target) || (dir < 0 && play.p <= play.target)) {
+      play.p = play.target;
+      play.raf = 0;
+      lock(false);
+      render(lastTop);
+      return;
+    }
+    render(lastTop);
+    play.raf = requestAnimationFrame(step);
+  }
+
+  function setTarget(target, withLock) {
+    if (play.target === target && (play.raf || play.p === target)) return;
+    play.target = target;
+    if (withLock && target > play.p) lock(true);
+    if (!play.raf) { play.last = 0; play.raf = requestAnimationFrame(step); }
+  }
+
   function update() {
     if (reduceMotion.matches) return;
     // rect values → canvas px, whatever the browser's zoom model is
     var s = sticky.getBoundingClientRect();
     var scale = s.height / sticky.offsetHeight || 1;
     var top = section.getBoundingClientRect().top / scale;
+    lastTop = top;
 
+    if (top <= 0.5 && top > -pin) setTarget(PLAY_END, true);       // panel is full-screen: play
+    else if (top <= -pin) { play.p = play.target = PLAY_END; }     // already past it
+    else setTarget(0, false);                                       // scrolled back up: rewind
+
+    render(top);
+  }
+
+  function render(top) {
     // --- hero parallax: content runs 70.5px ahead of the scroll (home-1 → home-2)
     var heroShift = range(window.scrollY / zoom, 0, 246.5);
     heroInner.style.transform = "translateY(" + (-70.5 * heroShift) + "px)";
 
-    // --- before the pin: dots travel, nodes pop (home-2 → home-3) ---
+    // --- with the scroll: dots travel, nodes pop (home-2 → home-3) ---
     var topVh = top / vh;
-    var p = clamp(-top / pin, 0, 1);
+    var p = play.p;
     for (var i = 0; i < lines.length; i++) updateLine(lines[i], topVh, p);
     var net2 = range(topVh, 0.42, 0.32); // line layout switches to the home-3 network
     stage1.style.opacity = 1 - net2;
 
-    // --- approaching the top: panel grows to full-bleed (home-3 → home-4) ---
+    // --- with the scroll: panel grows to full-bleed (home-3 → home-4) ---
     var g = ease(range(top, vh * 0.3, 0));
     panel.style.setProperty("--inset", lerp(START.inset, 0, g) + "px");
     panel.style.setProperty("--panel-h", lerp(START.height, stageH, g) + "px");
     panel.style.setProperty("--radius", lerp(START.radius, 0, g) + "px");
 
-    // --- pinned: nodes bump away, interface comes in (home-4) ---
+    // --- on its own (time): nodes bump away, interface comes in (home-4) ---
     stage2.style.opacity = net2 * (1 - ease(range(p, 0.1, 0.28)));
     setStage3(ease(range(p, 0.16, 0.3)));
 
@@ -162,6 +204,9 @@
     pulseIn.style.opacity = pulseOut.style.opacity = "";
     root.style.removeProperty("--stage-h");
     root.style.removeProperty("--pin");
+    if (play.raf) cancelAnimationFrame(play.raf);
+    play.raf = 0;
+    lock(false);
   }
 
   function init() {
