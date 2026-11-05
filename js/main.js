@@ -103,7 +103,8 @@
       return;
     }
     stageH = Math.round(clamp(vh, 700, 1000));
-    pin = Math.round(Math.max(420, vh * 0.55)); // short hold on the final frame before it scrolls away
+    // the pin only guards the timed sequence; it is dropped as soon as that has played
+    pin = released ? 0 : Math.round(Math.max(420, vh * 0.55));
     root.style.setProperty("--stage-h", stageH + "px");
     root.style.setProperty("--pin", pin + "px");
     update();
@@ -118,6 +119,7 @@
   var PLAY_MS = 4000;            // ms for p: 0 → 1 (so ~3.3s to PLAY_END)
   var BACK_MS = 1400;            // faster when rewinding
   var play = { p: 0, target: 0, raf: 0, last: 0 };
+  var released = false;          // pin removed once the sequence has played
   var lastTop = 0;
 
   function lock(on) { root.classList.toggle("is-locked", on); }
@@ -130,12 +132,21 @@
     if ((dir > 0 && play.p >= play.target) || (dir < 0 && play.p <= play.target)) {
       play.p = play.target;
       play.raf = 0;
+      if (play.p === PLAY_END && !released && lastTop <= 0.5 && lastTop > -pin) release();
       lock(false);
       render(lastTop);
       return;
     }
     render(lastTop);
     play.raf = requestAnimationFrame(step);
+  }
+
+  // drop the pin: the panel is at the top of the viewport, so shortening the
+  // section below it does not move anything on screen — it just scrolls on
+  function release() {
+    released = true;
+    pin = 0;
+    root.style.setProperty("--pin", "0px");
   }
 
   function setTarget(target, withLock) {
@@ -153,7 +164,8 @@
     var top = section.getBoundingClientRect().top / scale;
     lastTop = top;
 
-    if (top <= 0.5 && top > -pin) setTarget(PLAY_END, true);       // panel is full-screen: play
+    if (released) { /* played: nothing more to do */ }
+    else if (top <= 0.5 && top > -pin) setTarget(PLAY_END, true);  // panel is full-screen: play
     else if (top <= -pin) { play.p = play.target = PLAY_END; }     // already past it
     // scrolling back up: the sequence stays played (no rewind)
 
