@@ -564,12 +564,11 @@ img.fill { position: absolute; display: block; max-width: none; }
 .beam { height: 0; transform-origin: 0 50%; }
 .beam img.fill { left: 0; top: -1.5px; }
 
-/* beam pulses travel card → symbol → window a few times, then settle on the
-   spot they have in the Figma frame */
-.pulse--in.is-running  { animation: beam-in 1.45s linear 3, beam-in-settle .9s cubic-bezier(.2, .8, .2, 1) 4.35s forwards; }
-.pulse--out.is-running { animation: beam-out 1.7s linear 3, beam-out-settle .9s cubic-bezier(.2, .8, .2, 1) 5.1s forwards; }
-@keyframes beam-in-settle  { from { transform: translateX(-60px); }  to { transform: none; } }
-@keyframes beam-out-settle { from { transform: translateX(-110px); } to { transform: none; } }
+/* beam pulses travel card → symbol → window until the result window appears,
+   then settle (JS) on the spot they have in the Figma frame */
+.pulse--in.is-running  { animation: beam-in 1.45s linear infinite; }
+.pulse--out.is-running { animation: beam-out 1.7s linear infinite; }
+.pulse--travel.is-settled { animation: none; transform: none; }
 @keyframes beam-in {
   from { transform: translateX(-60px); }
   to   { transform: translateX(127px); }

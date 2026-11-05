@@ -110,6 +110,23 @@
     update();
   }
 
+  // beam dot: runs while its line is shown, stops once the result window comes in
+  function pulseState(el, run, settle) {
+    if (settle) {
+      if (el.classList.contains("is-settled")) return;
+      var from = getComputedStyle(el).transform;
+      el.classList.remove("is-running");
+      el.classList.add("is-settled");
+      if (from && from !== "none" && el.animate) {
+        el.animate([{ transform: from }, { transform: "none" }],
+          { duration: 600, easing: "cubic-bezier(.2, .8, .2, 1)" });
+      }
+    } else {
+      el.classList.remove("is-settled");
+      el.classList.toggle("is-running", run);
+    }
+  }
+
   function setStage3(o) {
     for (var i = 0; i < stage3.length; i++) stage3[i].style.opacity = o;
   }
@@ -219,12 +236,12 @@
     var bi = easeOut(range(p, 0.36, 0.46));
     beamIn.style.transform = "scaleX(" + bi + ")";
     pulseIn.style.opacity = range(p, 0.44, 0.47);
-    pulseIn.classList.toggle("is-running", p >= 0.44);
+    pulseState(pulseIn, p >= 0.44, p >= 0.58);
 
     var bo = easeOut(range(p, 0.47, 0.57));
     beamOut.style.transform = "scaleX(" + bo + ")";
     pulseOut.style.opacity = range(p, 0.55, 0.58);
-    pulseOut.classList.toggle("is-running", p >= 0.55);
+    pulseState(pulseOut, p >= 0.55, p >= 0.58);
 
     var kw = range(p, 0.56, 0.72);
     win.style.transform = "translateY(calc(-50% + " + (64 * (1 - easeOutBack(kw))) + "px)) scale(" + lerp(0.94, 1, easeOut(kw)) + ")";
