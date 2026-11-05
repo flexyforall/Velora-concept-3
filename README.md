@@ -14,11 +14,13 @@ Static landing page built 1:1 from the Figma file **Velora → section "Concept 
 ```
 index.html          page markup
 css/styles.css      all styles (values taken from Figma: spacing, colors, type)
-js/main.js          canvas scaling + scroll storyboard + tab switching
+js/loader.js        page loader (Figma 635:8074)
+js/main.js          canvas scaling + scroll storyboard + product menu
 assets/
   icons/            logo, UI icons, product icons (SVG)
   decor/            gradients, lines, glows, beams, bottom strips (SVG)
   logos/            partner logos (PNG)
+  loader/           logo parts for the loader (SVG)
 ```
 
 ## Fonts

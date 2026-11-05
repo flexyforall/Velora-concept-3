@@ -63,6 +63,45 @@ img.fill { position: absolute; display: block; max-width: none; }
 .rot-180 { transform: rotate(180deg); }
 
 /* =========================================================
+   LOADER (635:8074) — 1440 × 860 frames, logo box 517 × 81
+   ========================================================= */
+.loader { display: none; }
+.is-loading .loader,
+.loader.is-leaving {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--white);
+}
+.is-loading { overflow: hidden; }
+.loader.is-leaving { transition: opacity .6s ease, visibility 0s linear .6s; opacity: 0; visibility: hidden; }
+.loader__logo {
+  position: absolute;
+  left: calc(50% + 158.5px);   /* frames 02–06: the mark sits on the center */
+  top: calc(50% + .5px);
+  width: 517px;
+  height: 81px;
+  transform: translate(-50%, -50%);
+}
+.loader__part { position: absolute; opacity: 0; will-change: transform, opacity; }
+.loader__counter {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 66px);       /* top 496px in an 860px frame */
+  width: 120px;
+  transform: translateX(-50%);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: normal;
+  letter-spacing: .56px;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(24, 24, 24, .55);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
    NAV CAPSULE (822:11552)
    ========================================================= */
 .nav {

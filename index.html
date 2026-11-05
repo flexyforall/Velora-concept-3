@@ -9,8 +9,30 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,200;14..32,300&family=Manrope:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <script>
+    /* Loader (635:8074): show only when JS runs and motion is allowed */
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("is-loading");
+    }
+  </script>
 </head>
 <body>
+  <!-- Loader (635:8074): mark strokes rise in, counter to 100%, wordmark slides in -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__logo">
+      <img class="loader__part" data-part="mark-l" src="assets/loader/mark-l.svg" width="83.8893" height="58.9503" style="left:0;top:21.832px" alt="">
+      <img class="loader__part" data-part="mark-c" src="assets/loader/mark-c.svg" width="57.0308" height="68.0959" style="left:60.926px;top:0" alt="">
+      <img class="loader__part" data-part="mark-r" src="assets/loader/mark-r.svg" width="83.8345" height="58.9676" style="left:95.049px;top:21.815px" alt="">
+      <img class="loader__part loader__letter" src="assets/loader/letter-v.svg" width="64.0391" height="77.4751" style="left:217.159px;top:1.539px" alt="">
+      <img class="loader__part loader__letter" src="assets/loader/letter-e.svg" width="54.5944" height="61.2082" style="left:279.39px;top:19.377px" alt="">
+      <img class="loader__part loader__letter" src="assets/loader/letter-l.svg" width="8.22706" height="79.0324" style="left:346.618px;top:0" alt="">
+      <img class="loader__part loader__letter" src="assets/loader/letter-o.svg" width="55.499" height="61.1777" style="left:367.358px;top:19.373px" alt="">
+      <img class="loader__part loader__letter" src="assets/loader/letter-r.svg" width="28.8174" height="58.7333" style="left:434.417px;top:20.382px" alt="">
+      <img class="loader__part loader__letter" src="assets/loader/letter-a.svg" width="49.0984" height="61.306" style="left:467.9px;top:19.309px" alt="">
+    </div>
+    <p class="loader__counter">0%</p>
+  </div>
+
   <!-- Nav capsule (880:2654) -->
   <header class="nav">
     <div class="nav__inner">
@@ -302,6 +324,7 @@
     </section>
   </main>
 
+  <script src="js/loader.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
