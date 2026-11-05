@@ -33,7 +33,7 @@
     var t1 = 0.4 - i * 0.018;            // arrival (panel top, in vh) — staggered
     var t0 = (H2 - f * t1) / (1 - f);    // departure, so the dot sits at (dx, dy) in home-2
     return {
-      x: x, y: y, dx: dx, dy: dy, f: f, t0: t0, t1: t1, i: i,
+      el: el, x: x, y: y, dx: dx, dy: dy, f: f, t0: t0, t1: t1, i: i,
       lead: el.querySelector(".net__lead"),
       flow: el.querySelector(".net__flow"),
       node: el.querySelector(".node")
@@ -76,7 +76,11 @@
     L.node.style.opacity = range(pop, 0, 0.3) * (1 - range(bk, 0.7, 1));
 
     // new dots keep flowing along the line while the node is shown
-    L.flow.style.opacity = range(topVh, L.t1 - 0.02, L.t1 - 0.06) * (1 - range(bk, 0, 0.4));
+    var fo = range(topVh, L.t1 - 0.02, L.t1 - 0.06) * (1 - range(bk, 0, 0.4));
+    L.flow.style.opacity = fo;
+    // start the few runs when the node shows up; reset once it is gone so it can replay
+    if (fo > 0.01) L.el.classList.add("is-flowing");
+    else if (fo === 0) L.el.classList.remove("is-flowing");
   }
 
   function applyZoom() {
@@ -179,10 +183,12 @@
     var bi = easeOut(range(p, 0.36, 0.46));
     beamIn.style.transform = "scaleX(" + bi + ")";
     pulseIn.style.opacity = range(p, 0.44, 0.47);
+    pulseIn.classList.toggle("is-running", p >= 0.44);
 
     var bo = easeOut(range(p, 0.47, 0.57));
     beamOut.style.transform = "scaleX(" + bo + ")";
     pulseOut.style.opacity = range(p, 0.55, 0.58);
+    pulseOut.classList.toggle("is-running", p >= 0.55);
 
     var kw = range(p, 0.56, 0.72);
     win.style.transform = "translateY(calc(-50% + " + (64 * (1 - easeOutBack(kw))) + "px)) scale(" + lerp(0.94, 1, easeOut(kw)) + ")";
