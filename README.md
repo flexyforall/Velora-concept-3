@@ -4,8 +4,10 @@ Static landing page built 1:1 from the Figma file **Velora → section "Concept 
 
 - `home-5` is the full page layout (hero, logo strip, "Proven at scale").
 - Section `884:3776` (`home-2 → home-3 → home-4`) is the scroll animation of the products panel:
-  the panel rises with a bare network (home-2), product nodes appear (home-3), the panel grows
-  to full-bleed and pins while the link card, product window and tabs come in (home-4).
+  white dots travel from the Velora symbol along the lines (home-2); when a dot reaches its spot
+  the product node pops in and new dots keep flowing along the line (home-3); the panel grows to
+  full-bleed and pins, the nodes bump and vanish, and the link card, product window and tabs
+  come in (home-4).
 
 ## Structure
 

@@ -1,9 +1,10 @@
 /* Velora — Concept 3
  * 1) Scales the 1440px canvas down on narrower screens (layout stays 1:1 with Figma).
  * 2) Scroll storyboard for the products panel (Figma section 884:3776):
- *    home-2  panel rises into view, bare network
- *    home-3  product nodes appear around the Velora symbol
- *    home-4  panel grows to full-bleed, product window, link card and tabs come in
+ *    home-2  panel rises into view; white dots travel from the symbol along the lines
+ *    home-3  each dot reaches its spot and the product node pops in, new dots keep flowing
+ *    home-4  panel grows to full-bleed and pins; the nodes bump and vanish,
+ *            then the link card, product window and tabs come in
  */
 (function () {
   "use strict";
@@ -23,7 +24,20 @@
   var stage1 = document.querySelector(".stage--1");
   var stage2 = document.querySelector(".stage--2");
   var stage3 = document.querySelectorAll(".stage--3");
-  var nodes = document.querySelectorAll(".stage--2 .node");
+  var H2 = 0.497; // panel top (in viewport heights) in Figma frame home-2
+  var lines = Array.prototype.map.call(document.querySelectorAll(".net__line"), function (el, i) {
+    var x = +el.dataset.x, y = +el.dataset.y, dx = +el.dataset.dx, dy = +el.dataset.dy;
+    // how far along the line the dot is in home-2
+    var f = Math.sqrt(dx * dx + dy * dy) / Math.sqrt(x * x + y * y);
+    var t1 = 0.4 - i * 0.018;            // arrival (panel top, in vh) — staggered
+    var t0 = (H2 - f * t1) / (1 - f);    // departure, so the dot sits at (dx, dy) in home-2
+    return {
+      x: x, y: y, dx: dx, dy: dy, f: f, t0: t0, t1: t1, i: i,
+      lead: el.querySelector(".net__lead"),
+      flow: el.querySelector(".net__flow"),
+      node: el.querySelector(".node")
+    };
+  });
   var card = document.querySelector(".anim-left");
   var win = document.querySelector(".anim-up");
   var tabs = document.querySelector(".anim-up-sm");
@@ -33,6 +47,32 @@
   function range(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
   function lerp(a, b, t) { return a + (b - a) * t; }
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  function easeIn(t) { return t * t * t; }
+  function easeOutBack(t) { var c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); }
+  // "bump": swell to 1.18, then collapse to 0
+  function bump(t) { return t < 0.35 ? 1 + 0.18 * easeOut(t / 0.35) : 1.18 * (1 - easeIn((t - 0.35) / 0.65)); }
+
+  function updateLine(L, topVh, p) {
+    // lead dot: center → home-2 spot → node, driven by scroll
+    var k = range(topVh, L.t0, L.t1);
+    var px, py;
+    if (k <= L.f) { var a = k / L.f; px = L.dx * a; py = L.dy * a; }
+    else { var b = (k - L.f) / (1 - L.f); px = lerp(L.dx, L.x, b); py = lerp(L.dy, L.y, b); }
+    L.lead.style.transform = "translate(calc(-50% + " + px + "px), calc(-50% + " + py + "px))";
+    L.lead.style.opacity = range(topVh, L.t0, L.t0 - 0.03) * (1 - range(topVh, L.t1 + 0.012, L.t1));
+
+    // node pops in when the dot arrives …
+    var pop = range(topVh, L.t1, L.t1 - 0.045);
+    // … and bumps away once the panel is pinned
+    var bk = range(p, 0.03 + L.i * 0.025, 0.17 + L.i * 0.025);
+    var s = bk > 0 ? bump(bk) : easeOutBack(pop);
+    L.node.style.setProperty("--s", Math.max(0, s));
+    L.node.style.opacity = range(pop, 0, 0.3) * (1 - range(bk, 0.7, 1));
+
+    // new dots keep flowing along the line while the node is shown
+    L.flow.style.opacity = range(topVh, L.t1 - 0.02, L.t1 - 0.06) * (1 - range(bk, 0, 0.4));
+  }
 
   function applyZoom() {
     zoom = Math.min(1, window.innerWidth / CANVAS);
@@ -68,15 +108,12 @@
     var heroShift = range(window.scrollY / zoom, 0, 246.5);
     heroInner.style.transform = "translateY(" + (-70.5 * heroShift) + "px)";
 
-    // --- before the pin: panel rises (home-2 → home-3) ---
-    var rise = ease(range(top, vh * 0.48, vh * 0.3)); // 0 → 1 while the panel comes up
-    stage1.style.opacity = 1 - rise;
-    stage2.style.opacity = rise;
-    for (var i = 0; i < nodes.length; i++) {
-      var k = ease(range(top, vh * (0.48 - i * 0.02), vh * (0.38 - i * 0.02)));
-      nodes[i].style.transform = "scale(" + (0.6 + 0.4 * k) + ")";
-      nodes[i].style.opacity = k;
-    }
+    // --- before the pin: dots travel, nodes pop (home-2 → home-3) ---
+    var topVh = top / vh;
+    var p = clamp(-top / pin, 0, 1);
+    for (var i = 0; i < lines.length; i++) updateLine(lines[i], topVh, p);
+    var net2 = range(topVh, 0.42, 0.32); // line layout switches to the home-3 network
+    stage1.style.opacity = 1 - net2;
 
     // --- approaching the top: panel grows to full-bleed (home-3 → home-4) ---
     var g = ease(range(top, vh * 0.3, 0));
@@ -84,20 +121,18 @@
     panel.style.setProperty("--panel-h", lerp(START.height, stageH, g) + "px");
     panel.style.setProperty("--radius", lerp(START.radius, 0, g) + "px");
 
-    // --- pinned: network gives way to the product composition (home-4) ---
-    var p = clamp(-top / pin, 0, 1);
-    var out2 = ease(range(p, 0.04, 0.3));
-    stage2.style.opacity = rise * (1 - out2);
-
-    setStage3(ease(range(p, 0.1, 0.36)));
-    var kc = ease(range(p, 0.16, 0.46));
-    var kw = ease(range(p, 0.22, 0.56));
-    var kt = ease(range(p, 0.32, 0.66));
-    card.style.transform = "translateX(" + (-48 * (1 - kc)) + "px)";
-    win.style.transform = "translateY(calc(-50% + " + (56 * (1 - kw)) + "px))";
-    win.style.opacity = kw;
-    tabs.style.transform = "translateX(-50%) translateY(" + (32 * (1 - kt)) + "px)";
-    tabs.style.opacity = kt;
+    // --- pinned: nodes bump away, interface comes in (home-4) ---
+    stage2.style.opacity = net2 * (1 - ease(range(p, 0.1, 0.28)));
+    setStage3(ease(range(p, 0.16, 0.32)));
+    var kc = range(p, 0.2, 0.4);
+    var kw = range(p, 0.24, 0.46);
+    var kt = range(p, 0.3, 0.52);
+    card.style.transform = "translateX(" + (-56 * (1 - easeOutBack(kc))) + "px)";
+    card.style.opacity = range(kc, 0, 0.3);
+    win.style.transform = "translateY(calc(-50% + " + (64 * (1 - easeOutBack(kw))) + "px)) scale(" + lerp(0.94, 1, easeOut(kw)) + ")";
+    win.style.opacity = range(kw, 0, 0.3);
+    tabs.style.transform = "translateX(-50%) translateY(" + (40 * (1 - easeOutBack(kt))) + "px)";
+    tabs.style.opacity = range(kt, 0, 0.3);
   }
 
   function resetFinal() {
@@ -106,7 +141,7 @@
     stage1.style.opacity = stage2.style.opacity = "";
     setStage3("");
     card.style.transform = win.style.transform = tabs.style.transform = "";
-    win.style.opacity = tabs.style.opacity = "";
+    card.style.opacity = win.style.opacity = tabs.style.opacity = "";
     root.style.removeProperty("--stage-h");
     root.style.removeProperty("--pin");
   }

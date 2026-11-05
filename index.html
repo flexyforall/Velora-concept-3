@@ -95,31 +95,45 @@
             <div class="abs" style="left:908.15px;top:-145.44px;width:755.847px;height:539.891px"><img class="fill" style="inset:-24% -17.14%" src="assets/decor/rose.svg" alt=""></div>
           </div>
 
-          <!-- Stage 1: network (home-2, 818:6999) -->
+          <!-- Stage 1: network lines (home-2, 818:6999) -->
           <div class="stage stage--1 box box--net" data-stage="1">
             <div class="abs center" style="left:50%;top:50%;width:1396px;height:659px"><img class="fill" style="inset:-1.04% -5.87% -3.09% 0" src="assets/decor/network-decor-dots.svg" alt=""></div>
-            <span class="pulse-lg" style="left:calc(50% - 181px);top:calc(50% - 43px)"></span>
-            <span class="pulse-lg" style="left:calc(50% + 169px);top:calc(50% - 39px)"></span>
-            <span class="pulse-lg" style="left:calc(50% - 99px);top:calc(50% + 113px)"></span>
-            <span class="pulse-lg" style="left:calc(50% + 73px);top:calc(50% + 86px)"></span>
-            <span class="pulse-lg" style="left:calc(50% - 150px);top:calc(50% - 149px)"></span>
           </div>
 
-          <!-- Stage 2: product nodes (home-3, 818:6858) -->
+          <!-- Stage 2: network lines with product nodes (home-3, 818:6858) -->
           <div class="stage stage--2 box box--net box--net-shift" data-stage="2">
             <div class="abs center" style="left:50%;top:calc(50% + 20px);width:1396px;height:659px"><img class="fill" style="inset:-1.04% -5.87% -3.09% 0" src="assets/decor/network-decor-icons.svg" alt=""></div>
-            <span class="pulse" style="left:562px;top:317px"><img src="assets/decor/beam-pulse-soft.svg" alt=""></span>
-            <span class="pulse" style="left:618px;top:422.5px"><img src="assets/decor/beam-pulse-soft.svg" alt=""></span>
-            <span class="pulse" style="left:779px;top:455.5px"><img src="assets/decor/beam-pulse-soft.svg" alt=""></span>
-            <span class="pulse" style="left:542px;top:202.5px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
-            <span class="pulse" style="left:862px;top:303.5px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
-            <div class="node node--main" style="left:457px;top:121.5px">
-              <div class="node__logo"><span class="node__fr"><img class="fill" style="inset:-6.57%" src="assets/icons/product-fundraising-color.svg" width="29.4985" height="29.4985" alt="Fundraising"></span></div>
+          </div>
+
+          <!-- Network motion: white dots travel from the Velora symbol along each line;
+               when a dot arrives the product node pops in, then new dots keep flowing.
+               Coordinates are relative to the symbol center (Figma home-2 / home-3). -->
+          <div class="net">
+            <div class="net__line" data-line="fundraising" data-x="-195" data-y="-195.5" data-dx="-150" data-dy="-149" style="--x:-195px;--y:-195.5px">
+              <span class="net__flow"><i></i><i></i></span>
+              <span class="net__lead"></span>
+              <div class="node node--main"><div class="node__logo"><span class="node__fr"><img class="fill" style="inset:-6.57%" src="assets/icons/product-fundraising-color.svg" width="29.4985" height="29.4985" alt="Fundraising"></span></div></div>
             </div>
-            <div class="node" style="left:307px;top:228px"><img class="node__img" src="assets/icons/node-donor-management.svg" width="44" height="44" alt="Donor Management"></div>
-            <div class="node" style="left:500px;top:481.5px"><img class="node__img" src="assets/icons/node-grant-management.svg" width="44" height="44" alt="Grant Management"></div>
-            <div class="node" style="left:961px;top:243.5px"><span class="node__icon"><img src="assets/icons/node-mission-assistant.svg" width="32" height="32" alt="Mission Assistant"></span></div>
-            <div class="node" style="left:802px;top:473.5px"><img class="node__img" src="assets/icons/node-fund-accounting.svg" width="44" height="44" alt="Fund Accounting"></div>
+            <div class="net__line" data-line="donor" data-x="-345" data-y="-89" data-dx="-181" data-dy="-43" style="--x:-345px;--y:-89px">
+              <span class="net__flow"><i></i><i></i></span>
+              <span class="net__lead"></span>
+              <div class="node"><img class="node__img" src="assets/icons/node-donor-management.svg" width="44" height="44" alt="Donor Management"></div>
+            </div>
+            <div class="net__line" data-line="grant" data-x="-152" data-y="164.5" data-dx="-99" data-dy="113" style="--x:-152px;--y:164.5px">
+              <span class="net__flow"><i></i><i></i></span>
+              <span class="net__lead"></span>
+              <div class="node"><img class="node__img" src="assets/icons/node-grant-management.svg" width="44" height="44" alt="Grant Management"></div>
+            </div>
+            <div class="net__line" data-line="mission" data-x="309" data-y="-73.5" data-dx="169" data-dy="-39" style="--x:309px;--y:-73.5px">
+              <span class="net__flow"><i></i><i></i></span>
+              <span class="net__lead"></span>
+              <div class="node"><span class="node__icon"><img src="assets/icons/node-mission-assistant.svg" width="32" height="32" alt="Mission Assistant"></span></div>
+            </div>
+            <div class="net__line" data-line="fund" data-x="150" data-y="156.5" data-dx="73" data-dy="86" style="--x:150px;--y:156.5px">
+              <span class="net__flow"><i></i><i></i></span>
+              <span class="net__lead"></span>
+              <div class="node"><img class="node__img" src="assets/icons/node-fund-accounting.svg" width="44" height="44" alt="Fund Accounting"></div>
+            </div>
           </div>
 
           <!-- Stage 3 (home-4, 880:2425): connection lines -->
@@ -142,8 +156,8 @@
           <div class="stage stage--3 stage--3-content box box--full" data-stage="3">
             <div class="abs beam" style="left:549px;top:400px;width:127px"><img class="fill" style="inset:-1.5px 0 0 0" src="assets/decor/beam-in.svg" alt=""></div>
             <div class="abs beam" style="left:752px;top:400px;width:190px"><img class="fill" style="inset:-1.5px 0 0 0" src="assets/decor/beam-out.svg" alt=""></div>
-            <span class="pulse pulse--travel" style="left:589px;top:395px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
-            <span class="pulse pulse--travel" style="left:833.5px;top:395px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
+            <span class="pulse pulse--travel pulse--in" style="left:589px;top:395px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
+            <span class="pulse pulse--travel pulse--out" style="left:833.5px;top:395px"><img src="assets/decor/beam-pulse.svg" alt=""></span>
 
             <!-- Link card (880:2954) -->
             <div class="link-stack anim-left">
