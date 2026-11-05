@@ -167,9 +167,11 @@
 
     // --- with the scroll: panel grows to full-bleed (home-3 → home-4) ---
     var g = ease(range(top, vh * 0.3, 0));
-    panel.style.setProperty("--inset", lerp(START.inset, 0, g) + "px");
+    // --- with the scroll, leaving: the panel narrows by 30px on each side ---
+    var n = ease(range(top, -pin, -pin - vh * 0.5));
+    panel.style.setProperty("--inset", (lerp(START.inset, 0, g) + 30 * n) + "px");
     panel.style.setProperty("--panel-h", lerp(START.height, stageH, g) + "px");
-    panel.style.setProperty("--radius", lerp(START.radius, 0, g) + "px");
+    panel.style.setProperty("--radius", (lerp(START.radius, 0, g) + START.radius * n) + "px");
 
     // --- on its own (time): nodes bump away, interface comes in (home-4) ---
     stage2.style.opacity = net2 * (1 - ease(range(p, 0.1, 0.28)));
