@@ -65,7 +65,7 @@
     if (k <= L.f) { var a = k / L.f; px = L.dx * a; py = L.dy * a; }
     else { var b = (k - L.f) / (1 - L.f); px = lerp(L.dx, L.x, b); py = lerp(L.dy, L.y, b); }
     L.lead.style.transform = "translate(calc(-50% + " + px + "px), calc(-50% + " + py + "px))";
-    L.lead.style.opacity = range(topVh, L.t0, L.t0 - 0.03) * (1 - range(topVh, L.t1 + 0.012, L.t1));
+    L.lead.style.opacity = range(topVh, L.t0, L.t0 - 0.03) * (1 - range(topVh, L.t1 + 0.012, L.t1)) * (1 - range(p, 0, 0.05));
 
     // node pops in when the dot arrives …
     var pop = range(topVh, L.t1, L.t1 - 0.045);
@@ -148,7 +148,7 @@
 
     if (top <= 0.5 && top > -pin) setTarget(PLAY_END, true);       // panel is full-screen: play
     else if (top <= -pin) { play.p = play.target = PLAY_END; }     // already past it
-    else setTarget(0, false);                                       // scrolled back up: rewind
+    // scrolling back up: the sequence stays played (no rewind)
 
     render(top);
   }
@@ -163,7 +163,7 @@
     var p = play.p;
     for (var i = 0; i < lines.length; i++) updateLine(lines[i], topVh, p);
     var net2 = range(topVh, 0.42, 0.32); // line layout switches to the home-3 network
-    stage1.style.opacity = 1 - net2;
+    stage1.style.opacity = (1 - net2) * (1 - range(p, 0, 0.05));
 
     // --- with the scroll: panel grows to full-bleed (home-3 → home-4) ---
     var g = ease(range(top, vh * 0.3, 0));
