@@ -52,6 +52,9 @@
   var beamsLayer = document.querySelector(".stage--3-beams");
   var tabsLayer = document.querySelector(".stage--3-tabs");
   var symbol = document.querySelector(".symbol");
+  var net = document.querySelector(".net");
+  var intro = document.querySelector(".anim-intro");
+  var SYMBOL_DROP = 50;    // home-4: symbol 50px below the panel center (home-2/3: on center)
   var LINE_HALF_H = 354;   // vertical reach of the line fan from the symbol (home-4)
   var LINE_HALF_W = 734;   // horizontal reach
 
@@ -61,7 +64,6 @@
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
   function easeIn(t) { return t * t * t; }
-  function easeOutBack(t) { var c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); }
   // "bump": swell to 1.18, then collapse to 0
   function bump(t) { return t < 0.35 ? 1 + 0.18 * easeOut(t / 0.35) : 1.18 * (1 - easeIn((t - 0.35) / 0.65)); }
 
@@ -78,7 +80,7 @@
     var pop = range(topVh, L.t1, L.t1 - 0.045);
     // … and bumps away once the panel is pinned
     var bk = range(p, 0.03 + L.i * 0.025, 0.17 + L.i * 0.025);
-    var s = bk > 0 ? bump(bk) : easeOutBack(pop);
+    var s = bk > 0 ? bump(bk) : lerp(0.6, 1, easeOut(pop));   // appears without overshoot
     L.node.style.setProperty("--s", Math.max(0, s));
     L.node.style.opacity = range(pop, 0, 0.3) * (1 - range(bk, 0.7, 1));
 
@@ -132,7 +134,7 @@
   }
 
   // --- full-screen state: the rest plays on its own, not with the scroll ---
-  var PLAY_END = 0.82;           // where the timeline below is complete
+  var PLAY_END = 0.84;           // where the timeline below is complete
   var PLAY_MS = 4000;            // ms for p: 0 → 1 (so ~3.3s to PLAY_END)
   var BACK_MS = 1400;            // faster when rewinding
   var play = { p: 0, target: 0, raf: 0, last: 0 };
@@ -193,6 +195,7 @@
     // --- hero parallax: content runs 70.5px ahead of the scroll (home-1 → home-2)
     var heroShift = range(window.scrollY / zoom, 0, 246.5);
     heroInner.style.transform = "translateY(" + (-70.5 * heroShift) + "px)";
+    panel.style.setProperty("--panel-y", (24 * (1 - heroShift)) + "px");
 
     // --- with the scroll: dots travel, nodes pop (home-2 → home-3) ---
     var topVh = top / vh;
@@ -213,7 +216,12 @@
     // content drifts up a little as the panel leaves (home-4 → home-5)
     var shift = -60 * n;
     var sy = "translate(-50%, calc(-50% + " + shift + "px))";
-    symbol.style.transform = sy;
+    // the network sits on the panel center; it settles 50px lower as the panel goes full-screen
+    var drop = SYMBOL_DROP * g;
+    symbol.style.transform = "translate(-50%, calc(-50% + " + (drop - SYMBOL_DROP + shift) + "px))";
+    net.style.transform = "translateY(" + drop + "px)";
+    stage1.style.transform = "translate(-50%, calc(-50% + " + drop + "px))";
+    stage2.style.transform = "translate(-50%, calc(-50% + " + drop + "px))";
     contentLayer.style.transform = sy;
     beamsLayer.style.transform = sy;
     tabsLayer.style.transform = "translateY(" + shift + "px)";
@@ -230,7 +238,7 @@
 
     // request card → line to the symbol → line to the result → result window → menu
     var kc = range(p, 0.2, 0.36);
-    card.style.transform = "translateX(" + (-56 * (1 - easeOutBack(kc))) + "px)";
+    card.style.transform = "translateX(" + (-56 * (1 - easeOut(kc))) + "px)";
     card.style.opacity = range(kc, 0, 0.3);
 
     var bi = easeOut(range(p, 0.36, 0.46));
@@ -244,21 +252,26 @@
     pulseState(pulseOut, p >= 0.55, p >= 0.58);
 
     var kw = range(p, 0.56, 0.72);
-    win.style.transform = "translateY(calc(-50% + " + (64 * (1 - easeOutBack(kw))) + "px)) scale(" + lerp(0.94, 1, easeOut(kw)) + ")";
+    win.style.transform = "translateY(calc(-50% + " + (48 * (1 - easeOut(kw))) + "px))";
     win.style.opacity = range(kw, 0, 0.3);
 
-    var kt = range(p, 0.66, 0.8);
-    tabs.style.transform = "translateX(-50%) translateY(" + (40 * (1 - easeOutBack(kt))) + "px)";
-    tabs.style.opacity = range(kt, 0, 0.3);
+    var ki = range(p, 0.64, 0.78);           // product intro, bottom left
+    intro.style.transform = "translateY(" + (24 * (1 - easeOut(ki))) + "px)";
+    intro.style.opacity = range(ki, 0, 0.4);
+
+    var kt = range(p, 0.68, 0.82);           // product menu, top of the panel
+    tabs.style.transform = "translateX(-50%) translateY(" + (-24 * (1 - easeOut(kt))) + "px)";
+    tabs.style.opacity = range(kt, 0, 0.4);
   }
 
   function resetFinal() {
     heroInner.style.transform = "";
-    ["--inset", "--panel-h", "--radius"].forEach(function (v) { panel.style.removeProperty(v); });
+    ["--inset", "--panel-h", "--radius", "--panel-y"].forEach(function (v) { panel.style.removeProperty(v); });
     stage1.style.opacity = stage2.style.opacity = "";
     setStage3("");
-    card.style.transform = win.style.transform = tabs.style.transform = "";
-    card.style.opacity = win.style.opacity = tabs.style.opacity = "";
+    card.style.transform = win.style.transform = tabs.style.transform = intro.style.transform = "";
+    card.style.opacity = win.style.opacity = tabs.style.opacity = intro.style.opacity = "";
+    net.style.transform = stage1.style.transform = stage2.style.transform = "";
     beamIn.style.transform = beamOut.style.transform = "";
     pulseIn.style.opacity = pulseOut.style.opacity = "";
     root.style.removeProperty("--stage-h");

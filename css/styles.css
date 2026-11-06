@@ -186,14 +186,14 @@ img.fill { position: absolute; display: block; max-width: none; }
   justify-content: flex-end;
   overflow: hidden;
 }
+/* Button / Small, light (935:17068) */
 .btn-nav {
   display: flex;
   align-items: center;
-  gap: 16px;
   height: 42px;
   padding: 0 5px 0 16px;
   background: var(--white);
-  border: 1px solid rgba(24, 24, 24, .09);
+  border: 1px solid rgba(24, 24, 24, .15);
   border-radius: 4px;
   font-weight: 600;
   font-size: 14px;
@@ -209,13 +209,16 @@ img.fill { position: absolute; display: block; max-width: none; }
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-image:
-    linear-gradient(126.3843536301049deg, rgb(230, 89, 70) 11.269%, rgb(255, 136, 149) 75.125%, rgb(229, 90, 127) 116.76%),
-    linear-gradient(90deg, rgba(0, 0, 0, .11) 0%, rgba(0, 0, 0, .11) 100%);
-  transition: filter .2s ease;
 }
-.btn-nav__slot img { width: 18px; height: 18px; transition: transform .25s ease; }
-.btn-nav:hover .btn-nav__slot img { transform: translateX(2px); }
+.btn-nav__slot img { width: 18px; height: 18px; }
+/* hover: the arrow slides out right and re-enters from the left */
+.btn-nav:hover .btn-nav__slot img { animation: arrow-loop .5s cubic-bezier(.6, 0, .3, 1); }
+@keyframes arrow-loop {
+  0%   { transform: translateX(0); }
+  49%  { transform: translateX(28px); }
+  50%  { transform: translateX(-28px); }
+  100% { transform: translateX(0); }
+}
 
 /* =========================================================
    HERO (814:2753) — 1440 × 650
@@ -391,7 +394,7 @@ img.fill { position: absolute; display: block; max-width: none; }
 
 .panel {
   position: absolute;
-  top: 0;
+  top: var(--panel-y, 0px);    /* home-1: 24px below the hero, closes up by home-2 */
   left: var(--inset, 0px);
   right: var(--inset, 0px);
   height: var(--panel-h, 812px);
@@ -425,7 +428,7 @@ img.fill { position: absolute; display: block; max-width: none; }
 .stage--3-tabs { position: absolute; inset: 0; z-index: 2; }
 /* the lines fan out from the symbol; scaled from that point so they always
    run past the panel edges (home-5, 816:1929) */
-.stage--3-lines { transform-origin: 720.5px 400px; }
+.stage--3-lines { transform-origin: 720.5px 450px; }
 
 .pulse {
   position: absolute;
@@ -539,7 +542,7 @@ img.fill { position: absolute; display: block; max-width: none; }
 .symbol {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: calc(50% + 50px);       /* home-4: the symbol sits 50px below the panel center */
   width: 88px;
   height: 88px;
   transform: translate(-50%, -50%);
@@ -587,12 +590,12 @@ img.fill { position: absolute; display: block; max-width: none; }
   border-radius: 4px;
   box-shadow: 0 12px 28px -6px rgba(168, 36, 63, .18);
 }
-.link-stack__b2 { left: 166px; top: 421px; width: 348px; height: 48px; background: #eba19e; }
-.link-stack__b1 { left: 146px; top: 400px; width: 388px; height: 54px; background: #f5cac6; }
+.link-stack__b2 { left: 166px; top: 471px; width: 348px; height: 48px; background: #eba19e; }
+.link-stack__b1 { left: 146px; top: 450px; width: 388px; height: 54px; background: #f5cac6; }
 .link-card {
   position: absolute;
   left: 129px;
-  top: 363px;
+  top: 413px;
   width: 420px;
   display: flex;
   align-items: center;
@@ -646,7 +649,7 @@ img.fill { position: absolute; display: block; max-width: none; }
 .window {
   position: absolute;
   left: 933px;
-  top: 50%;
+  top: calc(50% + 50px);
   width: 370px;
   transform: translateY(-50%);
   display: flex;
@@ -847,11 +850,41 @@ img.fill { position: absolute; display: block; max-width: none; }
 .wp-assistant__k { font-weight: 600; font-size: 10px; letter-spacing: .4px; text-transform: uppercase; color: rgba(24, 24, 24, .5); }
 .wp-assistant__v { font-weight: 500; font-size: 12px; color: rgba(24, 24, 24, .9); }
 
+/* Product intro · Fundraising (972:8669) */
+.intro {
+  position: absolute;
+  left: 48px;
+  bottom: 48px;
+  width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+  color: var(--white);
+}
+.intro__text { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.intro__title { width: 100%; font-weight: 600; font-size: 32px; line-height: 1.2; letter-spacing: -1.28px; }
+.intro__body { width: 100%; font-weight: 400; font-size: 16px; line-height: 1.5; opacity: .85; }
+.intro__link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--white);
+  white-space: nowrap;
+}
+.intro__link img { width: 16px; height: 16px; transition: transform .25s ease; }
+.intro__link:hover img { transform: translateX(3px); }
+
 /* Product menu (884:4243) */
 .tabs {
   position: absolute;
   left: calc(50% + .5px);
-  bottom: 30px;
+  top: 90px;                   /* home-4 (890:4665): the menu sits at the top of the panel */
   transform: translateX(-50%);
   display: flex;
   align-items: center;
